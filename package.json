@@ -1,6 +1,7 @@
 {
   "name": "qin-todo",
   "version": "1.0.0",
+  "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -8,7 +9,12 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:eslint": "eslint --cache .",
+    "lint:prettier": "prettier --check .",
+    "fix:eslint": "yarn lint:eslint --fix",
+    "fix:prettier": "yarn lint:prettier --write",
+    "prepare": "husky install"
   },
   "prettier": {
     "printWidth": 120
@@ -32,8 +38,13 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.2",
     "prettier": "^2.5.1",
     "typescript": "~4.3.5"
   },
-  "private": true
+  "lint-staged": {
+    "*.{ts,tsx}": "yarn fix:eslint",
+    "*": "yarn fix:prettier"
+  }
 }
