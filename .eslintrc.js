@@ -2,7 +2,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: { project: "./tsconfig.json", extraFileExtensions: [".mjs"] },
   plugins: ["simple-import-sort", "import"],
-  extends: ["@react-native-community", "prettier"],
+  extends: ["plugin:@typescript-eslint/recommended", "prettier"],
   rules: {
     "no-console": ["error", { allow: ["warn", "info", "error"] }],
 
