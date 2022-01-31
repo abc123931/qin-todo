@@ -1,10 +1,13 @@
 import { Box, NativeBaseProvider } from "native-base";
 import type { VFC } from "react";
+import { AppLayout } from "src/layout/AppLayout";
 
 const App: VFC = () => {
   return (
     <NativeBaseProvider>
-      <Box safeArea>Hello world</Box>
+      <AppLayout>
+        <Box>Hello world</Box>
+      </AppLayout>
     </NativeBaseProvider>
   );
 };
