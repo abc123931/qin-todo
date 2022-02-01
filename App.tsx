@@ -1,12 +1,13 @@
-import { Box, NativeBaseProvider } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import type { VFC } from "react";
 import { AppLayout } from "src/layout/AppLayout";
+import { AppScreen } from "src/screen/AppScreen";
 
 const App: VFC = () => {
   return (
     <NativeBaseProvider>
       <AppLayout>
-        <Box>Hello world</Box>
+        <AppScreen />
       </AppLayout>
     </NativeBaseProvider>
   );
