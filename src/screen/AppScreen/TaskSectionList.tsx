@@ -13,7 +13,19 @@ const sections = [
     color: theme.colors.danger[500],
   },
   {
-    title: "今度する",
+    title: "今度する2",
+    color: theme.colors.danger[500],
+  },
+  {
+    title: "今度する3",
+    color: theme.colors.danger[500],
+  },
+  {
+    title: "今度する4",
+    color: theme.colors.danger[500],
+  },
+  {
+    title: "今度する5",
     color: theme.colors.danger[500],
   },
 ];
