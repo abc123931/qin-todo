@@ -1,10 +1,14 @@
-import { Avatar, Box, Flex, HStack, ScrollView, Text, VStack } from "native-base";
+import { AntDesign } from "@expo/vector-icons";
+import { Avatar, Box, Button, Flex, HStack, Icon, Input, ScrollView, Text, useTheme, VStack } from "native-base";
+import type { ColorType } from "native-base/lib/typescript/components/types";
 import type { ReactNode, VFC } from "react";
 
 type AppLayoutProps = {
   children: ReactNode;
 };
 export const AppLayout: VFC<AppLayoutProps> = (props) => {
+  const theme = useTheme();
+
   return (
     <Flex justifyContent="space-between" h="100%">
       <VStack>
@@ -27,7 +31,44 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
       <ScrollView w="100%" flexGrow={1}>
         {props.children}
       </ScrollView>
-      <Box w="100%" h={50} bg="#6200ee"></Box>
+      <Box w="100%" bg="#6200ee">
+        <VStack px={6} py={3} space={2.5}>
+          <Input
+            variant="rounded"
+            placeholder="タスクを入力する"
+            height={36}
+            py={2.5}
+            px={4}
+            color={theme.colors.trueGray[100]}
+          />
+          <HStack alignItems="center" justifyContent="space-between">
+            <StatusButton text="今日する" color={theme.colors.rose[500]} />
+            <StatusButton text="明日する" color={theme.colors.orange[400]} />
+            <StatusButton text="今度する" color={theme.colors.amber[400]} />
+          </HStack>
+        </VStack>
+      </Box>
     </Flex>
+  );
+};
+
+type StatusButtonProps = {
+  text: string;
+  color: ColorType;
+};
+
+const StatusButton: VFC<StatusButtonProps> = (props) => {
+  const theme = useTheme();
+  return (
+    <Button
+      borderRadius={9999}
+      px={4}
+      bg={props.color}
+      leftIcon={<Icon as={AntDesign} name="plus" size="10.25" color={theme.colors.white} />}
+    >
+      <Text fontSize="xs" color={theme.colors.white} fontWeight="bold">
+        {props.text}
+      </Text>
+    </Button>
   );
 };

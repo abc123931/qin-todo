@@ -6,27 +6,15 @@ import { Pressable } from "react-native";
 const sections = [
   {
     title: "今日する",
-    color: theme.colors.danger[500],
+    color: theme.colors.rose[500],
   },
   {
     title: "明日する",
-    color: theme.colors.danger[500],
+    color: theme.colors.orange[400],
   },
   {
-    title: "今度する2",
-    color: theme.colors.danger[500],
-  },
-  {
-    title: "今度する3",
-    color: theme.colors.danger[500],
-  },
-  {
-    title: "今度する4",
-    color: theme.colors.danger[500],
-  },
-  {
-    title: "今度する5",
-    color: theme.colors.danger[500],
+    title: "今度する",
+    color: theme.colors.amber[400],
   },
 ];
 
