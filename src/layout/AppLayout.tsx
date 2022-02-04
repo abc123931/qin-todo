@@ -1,14 +1,29 @@
 import { AntDesign } from "@expo/vector-icons";
-import { Avatar, Box, Button, Flex, HStack, Icon, Input, ScrollView, Text, useTheme, VStack } from "native-base";
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Input,
+  KeyboardAvoidingView,
+  ScrollView,
+  Text,
+  useTheme,
+  VStack,
+} from "native-base";
 import type { ColorType } from "native-base/lib/typescript/components/types";
 import type { ReactNode, VFC } from "react";
-import { InputAccessoryView } from "react-native";
+import { useEffect, useState } from "react";
+import { Keyboard, Platform } from "react-native";
 
 type AppLayoutProps = {
   children: ReactNode;
 };
 export const AppLayout: VFC<AppLayoutProps> = (props) => {
   const theme = useTheme();
+  const { isShowKeyboard } = useKeyboard();
 
   return (
     <Flex justifyContent="space-between" h="100%">
@@ -32,9 +47,9 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
       <ScrollView w="100%" flexGrow={1}>
         {props.children}
       </ScrollView>
-      <InputAccessoryView>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <Box w="100%" bg="#6200ee">
-          <VStack px={6} py={3} space={2.5}>
+          <VStack px={6} py={3} pb={isShowKeyboard ? undefined : 10} space={2.5}>
             <Input
               variant="rounded"
               placeholder="タスクを入力する"
@@ -43,14 +58,16 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
               px={4}
               color={theme.colors.trueGray[100]}
             />
-            <HStack alignItems="center" justifyContent="space-between">
-              <StatusButton text="今日する" color={theme.colors.rose[500]} />
-              <StatusButton text="明日する" color={theme.colors.orange[400]} />
-              <StatusButton text="今度する" color={theme.colors.amber[400]} />
-            </HStack>
+            {isShowKeyboard ? (
+              <HStack alignItems="center" justifyContent="space-between">
+                <StatusButton text="今日する" color={theme.colors.rose[500]} />
+                <StatusButton text="明日する" color={theme.colors.orange[400]} />
+                <StatusButton text="今度する" color={theme.colors.amber[400]} />
+              </HStack>
+            ) : null}
           </VStack>
         </Box>
-      </InputAccessoryView>
+      </KeyboardAvoidingView>
     </Flex>
   );
 };
@@ -76,21 +93,21 @@ const StatusButton: VFC<StatusButtonProps> = (props) => {
   );
 };
 
-// const useKeyboard = () => {
-//   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-//   const _keyboardDidShow = () => setIsShowKeyboard(true);
-//   const _keyboardDidHide = () => setIsShowKeyboard(false);
+const useKeyboard = () => {
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const _keyboardDidShow = () => setIsShowKeyboard(true);
+  const _keyboardDidHide = () => setIsShowKeyboard(false);
 
-//   useEffect(() => {
-//     Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
-//     Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
+  useEffect(() => {
+    Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+    Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
 
-//     // cleanup function
-//     return () => {
-//       Keyboard.removeAllListeners("keyboardDidShow");
-//       Keyboard.removeAllListeners("keyboardDidHide");
-//     };
-//   }, []);
+    // cleanup function
+    return () => {
+      Keyboard.removeAllListeners("keyboardDidShow");
+      Keyboard.removeAllListeners("keyboardDidHide");
+    };
+  }, []);
 
-//   return { isShowKeyboard };
-// };
+  return { isShowKeyboard };
+};
