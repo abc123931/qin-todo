@@ -32,7 +32,7 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
       <ScrollView w="100%" flexGrow={1}>
         {props.children}
       </ScrollView>
-      <InputAccessoryView nativeID="inputAccessoryViewID">
+      <InputAccessoryView>
         <Box w="100%" bg="#6200ee">
           <VStack px={6} py={3} space={2.5}>
             <Input
@@ -42,7 +42,6 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
               py={2.5}
               px={4}
               color={theme.colors.trueGray[100]}
-              inputAccessoryViewID="inputAccessoryViewID"
             />
             <HStack alignItems="center" justifyContent="space-between">
               <StatusButton text="今日する" color={theme.colors.rose[500]} />
@@ -76,3 +75,22 @@ const StatusButton: VFC<StatusButtonProps> = (props) => {
     </Button>
   );
 };
+
+// const useKeyboard = () => {
+//   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+//   const _keyboardDidShow = () => setIsShowKeyboard(true);
+//   const _keyboardDidHide = () => setIsShowKeyboard(false);
+
+//   useEffect(() => {
+//     Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+//     Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
+
+//     // cleanup function
+//     return () => {
+//       Keyboard.removeAllListeners("keyboardDidShow");
+//       Keyboard.removeAllListeners("keyboardDidHide");
+//     };
+//   }, []);
+
+//   return { isShowKeyboard };
+// };
