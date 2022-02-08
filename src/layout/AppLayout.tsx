@@ -8,7 +8,6 @@ import {
   Icon,
   Input,
   KeyboardAvoidingView,
-  ScrollView,
   Text,
   useTheme,
   VStack,
@@ -44,9 +43,9 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
           />
         </HStack>
       </VStack>
-      <ScrollView w="100%" flexGrow={1}>
-        {props.children}
-      </ScrollView>
+      {/* <ScrollView w="100%" flexGrow={1}> */}
+      {props.children}
+      {/* </ScrollView> */}
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <Box w="100%" bg="#6200ee">
           <VStack px={6} py={3} pb={isShowKeyboard ? undefined : 10} space={2.5}>
