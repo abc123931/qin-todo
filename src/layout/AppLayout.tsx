@@ -10,11 +10,12 @@ import {
   KeyboardAvoidingView,
   Text,
   useTheme,
+  View,
   VStack,
 } from "native-base";
 import type { ColorType } from "native-base/lib/typescript/components/types";
 import type { ReactNode, VFC } from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard, Platform } from "react-native";
 
 type AppLayoutProps = {
@@ -43,9 +44,10 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
           />
         </HStack>
       </VStack>
-      {/* <ScrollView w="100%" flexGrow={1}> */}
-      {props.children}
-      {/* </ScrollView> */}
+      {/* TODO: 修正必要 なぜかheightを指定しないといけない */}
+      <View w="100%" height={100} px={6} flexGrow={1}>
+        {props.children}
+      </View>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <Box w="100%" bg="#6200ee">
           <VStack px={6} py={3} pb={isShowKeyboard ? undefined : 10} space={2.5}>
