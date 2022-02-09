@@ -1,11 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Box, Center, Heading, HStack, Icon, Pressable, Text, theme } from "native-base";
+import { Box, Center, Heading, HStack, Icon, Pressable, Text, theme, useTheme, View } from "native-base";
 import type { VFC } from "react";
+import { useCallback } from "react";
+import { useRef } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 import type { RenderItemParams } from "react-native-draggable-flatlist";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import SwipeableItem, { useSwipeableItemParams } from "react-native-swipeable-item";
 
 type Item = {
   id: string;
@@ -17,6 +21,14 @@ type Item = {
 
 const initialData: Item[] = [
   { id: "11", name: "タスク1", type: "item", color: theme.colors.rose[500], isDone: true },
+  { id: "12", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
+  { id: "13", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
+  { id: "14", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
+  { id: "15", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
+  { id: "16", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
+  { id: "17", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
+  { id: "18", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
+  { id: "19", name: "タスク2", type: "item", color: theme.colors.rose[500], isDone: false },
   { id: "tomorrow", name: "明日する", type: "section", color: theme.colors.orange[400], isDone: false },
   { id: "future", name: "今度する", type: "section", color: theme.colors.amber[400], isDone: false },
 ];
@@ -33,6 +45,7 @@ const CustomCheckbox: VFC<{ color: string; isDone: boolean }> = (props) => {
 
 export const TaskSectionList: VFC = () => {
   const [data, setData] = useState(initialData);
+  const itemRefs = useRef(new Map());
 
   const showTodayAddButton = useMemo(() => {
     const todayIndex = data.findIndex((d) => d.id === "today");
@@ -51,53 +64,117 @@ export const TaskSectionList: VFC = () => {
     return data.slice(futureIndex + 1).length === 0;
   }, [data]);
 
-  const renderItem = ({ item, drag, isActive }: RenderItemParams<Item>) => {
-    return (
-      <>
-        {item.type === "section" ? (
-          <>
-            {(item.id === "tomorrow" && showTodayAddButton) || (item.id === "future" && showTomorrowAddButton) ? (
-              <AddTaskButton />
-            ) : null}
-            <Heading size="md" pt={8} pb={4} color={item.color}>
-              {item.name}
-            </Heading>
-          </>
-        ) : (
-          <ScaleDecorator>
-            <TouchableOpacity onLongPress={drag} delayLongPress={100} disabled={isActive}>
-              <HStack alignItems="center" space={3} py={2}>
-                <CustomCheckbox color={item.color} isDone={item.isDone} />
-                <Heading
-                  size="sm"
-                  strikeThrough={item.isDone}
-                  color={item.isDone ? theme.colors.trueGray[300] : undefined}
-                >
-                  {item.name}
-                </Heading>
-              </HStack>
-            </TouchableOpacity>
-          </ScaleDecorator>
-        )}
-      </>
-    );
-  };
+  const renderItem = useCallback(
+    (params: RenderItemParams<Item>) => {
+      return (
+        <RowItem
+          {...params}
+          itemRefs={itemRefs}
+          showTodayAddButton={showTodayAddButton}
+          showTomorrowAddButton={showTomorrowAddButton}
+        />
+      );
+    },
+    [showTodayAddButton, showTomorrowAddButton]
+  );
 
   return (
-    <DraggableFlatList
-      data={data}
-      onDragEnd={({ data }) => setData(data)}
-      ListHeaderComponent={
-        <Heading size="md" pb={4} color={theme.colors.rose[500]}>
-          今日する
-        </Heading>
-      }
-      ListFooterComponent={showFutureAddButton ? <AddTaskButton /> : null}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ height: "100%", paddingTop: 24, paddingBottom: 24 }}
-    />
+    <View style={styles.container}>
+      <DraggableFlatList
+        data={data}
+        onDragEnd={({ data }) => setData(data)}
+        ListHeaderComponent={
+          <Heading size="md" pb={4} color={theme.colors.rose[500]}>
+            今日する
+          </Heading>
+        }
+        ListFooterComponent={showFutureAddButton ? <AddTaskButton /> : null}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        activationDistance={20}
+        contentContainerStyle={{ paddingTop: 24, paddingBottom: 40 }}
+      />
+    </View>
+  );
+};
+
+type RowItemProps = {
+  item: Item;
+  drag: () => void;
+  itemRefs: React.MutableRefObject<Map<any, any>>;
+  isActive: boolean;
+  showTodayAddButton: boolean;
+  showTomorrowAddButton: boolean;
+};
+const RowItem: VFC<RowItemProps> = (props) => {
+  return (
+    <>
+      {props.item.type === "section" ? (
+        <>
+          {(props.item.id === "tomorrow" && props.showTodayAddButton) ||
+          (props.item.id === "future" && props.showTomorrowAddButton) ? (
+            <AddTaskButton />
+          ) : null}
+          <Heading size="md" pt={8} pb={4} color={props.item.color}>
+            {props.item.name}
+          </Heading>
+        </>
+      ) : (
+        <ScaleDecorator>
+          <SwipeableItem
+            key={props.item.id}
+            item={props.item}
+            ref={(ref) => {
+              if (ref && !props.itemRefs.current.get(props.item.id)) {
+                props.itemRefs.current.set(props.item.id, ref);
+              }
+            }}
+            onChange={({ open }) => {
+              if (open) {
+                [...props.itemRefs.current.entries()].forEach(([key, ref]) => {
+                  if (key !== props.item.id && ref) ref.close();
+                });
+              }
+            }}
+            overSwipe={20}
+            renderUnderlayLeft={() => <UnderlayLeft />}
+            snapPointsLeft={[72]}
+          >
+            <View bgColor={theme.colors.white}>
+              <Pressable onLongPress={props.drag} delayLongPress={100} disabled={props.isActive}>
+                <HStack alignItems="center" space={3} py={2}>
+                  <CustomCheckbox color={props.item.color} isDone={props.item.isDone} />
+                  <Heading
+                    size="sm"
+                    strikeThrough={props.item.isDone}
+                    color={props.item.isDone ? theme.colors.trueGray[300] : undefined}
+                  >
+                    {props.item.name}
+                  </Heading>
+                </HStack>
+              </Pressable>
+            </View>
+          </SwipeableItem>
+        </ScaleDecorator>
+      )}
+    </>
+  );
+};
+
+const UnderlayLeft: VFC = () => {
+  const theme = useTheme();
+  const { percentOpen } = useSwipeableItemParams<Item>();
+  const animStyle = useAnimatedStyle(() => ({ opacity: percentOpen.value }), [percentOpen]);
+
+  return (
+    <Animated.View style={animStyle}>
+      <HStack w="100%" h="100%" justifyContent="flex-end" alignItems="center" px={5} bgColor={theme.colors.error[500]}>
+        <Text fontSize="md" color={theme.colors.white}>
+          削除
+        </Text>
+      </HStack>
+    </Animated.View>
   );
 };
 
@@ -113,3 +190,30 @@ const AddTaskButton: VFC = () => {
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  row: {
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    fontWeight: "bold",
+    color: "white",
+    fontSize: 32,
+  },
+  underlayRight: {
+    flex: 1,
+    backgroundColor: "teal",
+    justifyContent: "flex-start",
+  },
+  underlayLeft: {
+    flex: 1,
+    backgroundColor: "tomato",
+    justifyContent: "flex-end",
+  },
+});
