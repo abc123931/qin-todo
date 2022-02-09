@@ -1,7 +1,7 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: { project: "./tsconfig.json", extraFileExtensions: [".mjs"] },
-  plugins: ["simple-import-sort", "import"],
+  plugins: ["simple-import-sort", "import", "react-hooks"],
   extends: ["plugin:@typescript-eslint/recommended", "prettier"],
   rules: {
     "no-console": ["error", { allow: ["warn", "info", "error"] }],
@@ -13,6 +13,8 @@ module.exports = {
 
     // react
     "react/react-in-jsx-scope": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
 
     // @typescript-eslint
     "@typescript-eslint/ban-ts-comment": "off",
