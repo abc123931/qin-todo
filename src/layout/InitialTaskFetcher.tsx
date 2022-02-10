@@ -1,6 +1,6 @@
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { isBefore } from "date-fns";
-import { Text, theme } from "native-base";
+import { Center, Spinner, theme } from "native-base";
 import type { ReactElement, VFC } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -15,8 +15,11 @@ export const InitialTaskFetcher: VFC<InitialTaskFetcherProps> = (props) => {
   const { loading, initialTasks } = useInit();
 
   if (loading) {
-    // TODO: スピナーにする
-    return <Text>...loading</Text>;
+    return (
+      <Center w="100%" h="100%">
+        <Spinner size="lg" />
+      </Center>
+    );
   }
 
   return props.children(initialTasks);
