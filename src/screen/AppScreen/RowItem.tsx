@@ -54,7 +54,7 @@ export const RowItem: VFC<RowItemProps> = (props) => {
             )}
             snapPointsLeft={[72]}
           >
-            <View bgColor={theme.colors.white}>
+            <View bgColor={props.isActive ? "transparent" : theme.colors.white}>
               <Pressable onLongPress={props.drag} delayLongPress={100} disabled={props.isActive}>
                 <HStack alignItems="center" space={3} py={2}>
                   <CustomCheckbox
