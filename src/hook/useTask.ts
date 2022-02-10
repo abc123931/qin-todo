@@ -2,8 +2,10 @@ import { addDays, format, isBefore, startOfDay } from "date-fns";
 import { customAlphabet } from "nanoid/non-secure";
 import { theme } from "native-base";
 import type { Reducer } from "react";
+import { useEffect } from "react";
 import { useMemo } from "react";
 import { useReducer } from "react";
+import { dispatchState } from "src/valtio/dispatch";
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 const DATE_FORMAT = "yyyy-MM-dd";
@@ -148,6 +150,10 @@ export const useTask = () => {
     ],
     init
   );
+
+  useEffect(() => {
+    dispatchState.dispatch = dispatch;
+  }, []);
 
   const showTodayAddButton = useMemo(() => {
     const tomorrowIndex = tasks.findIndex((task) => task.id === "tomorrow");
