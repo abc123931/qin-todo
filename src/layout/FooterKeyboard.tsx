@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useController, useForm } from "react-hook-form";
 import { Keyboard, Platform } from "react-native";
 import { dispatchState } from "src/valtio/dispatch";
+import { todosIdState } from "src/valtio/todosId";
 import { useSnapshot } from "valtio";
 
 type Form = { name: string };
@@ -14,15 +15,18 @@ export const FooterKeyboard: VFC = () => {
   const theme = useTheme();
   const { isShowKeyboard } = useKeyboard();
   const snap = useSnapshot(dispatchState);
+  const todosIdSnap = useSnapshot(todosIdState);
   const { control, handleSubmit, reset } = useForm<Form>({ defaultValues: { name: "" } });
   const {
     field: { value, onChange },
   } = useController({ control, name: "name" });
 
   const handleClick = (sectionId: "today" | "tomorrow" | "future") =>
-    handleSubmit((data) => {
-      snap.dispatch?.({ type: "addTask", payload: { taskName: data.name, sectionId } });
-      reset();
+    handleSubmit(async (data) => {
+      if (todosIdSnap.todosId) {
+        snap.dispatch?.({ type: "addTask", payload: { todosId: todosIdSnap.todosId, taskName: data.name, sectionId } });
+        reset();
+      }
     });
 
   return (

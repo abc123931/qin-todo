@@ -1,3 +1,5 @@
+import "react-native-url-polyfill/auto";
+
 import { NativeBaseProvider } from "native-base";
 import type { VFC } from "react";
 import { Platform, UIManager } from "react-native";

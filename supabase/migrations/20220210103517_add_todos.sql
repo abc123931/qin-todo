@@ -3,24 +3,23 @@
 -- and may require manual changes to the script to ensure changes are applied in the correct order.
 -- Please report an issue for any failure with the reproduction steps.
 
-CREATE TABLE IF NOT EXISTS public.tasks
+CREATE TABLE IF NOT EXISTS public.todos
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    task jsonb NOT NULL,
+    tasks jsonb NOT NULL,
     created_at timestamp without time zone DEFAULT now(),
-    updated_at timestamp without time zone DEFAULT now(),
-    CONSTRAINT tasks_pkey PRIMARY KEY (id)
+    updated_at timestamp without time zone DEFAULT now()
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.tasks
+ALTER TABLE IF EXISTS public.todos
     OWNER to postgres;
 
-GRANT ALL ON TABLE public.tasks TO anon;
+GRANT ALL ON TABLE public.todos TO anon;
 
-GRANT ALL ON TABLE public.tasks TO authenticated;
+GRANT ALL ON TABLE public.todos TO authenticated;
 
-GRANT ALL ON TABLE public.tasks TO postgres;
+GRANT ALL ON TABLE public.todos TO postgres;
 
-GRANT ALL ON TABLE public.tasks TO service_role;
+GRANT ALL ON TABLE public.todos TO service_role;

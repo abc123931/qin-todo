@@ -1,13 +1,15 @@
-import { addDays, format, isBefore, startOfDay } from "date-fns";
-import { customAlphabet } from "nanoid/non-secure";
+import { addDays, format } from "date-fns";
 import { theme } from "native-base";
 import type { Reducer } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { useReducer } from "react";
+import { nanoid } from "src/lib/nanoid";
+import { supabase } from "src/lib/supabase";
 import { dispatchState } from "src/valtio/dispatch";
+import { todosIdState } from "src/valtio/todosId";
+import { useSnapshot } from "valtio";
 
-const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 const DATE_FORMAT = "yyyy-MM-dd";
 
 export type Task =
@@ -27,28 +29,9 @@ export type Task =
     };
 
 export type ReducerAction =
-  | { type: "addTask"; payload: { taskName: string; sectionId: "today" | "tomorrow" | "future" } }
-  | { type: "removeTask" | "toggleDone"; payload: { taskId: string } }
-  | { type: "changeOrder"; payload: { tasks: Task[] } };
-
-const init = (tasks: Task[]): Task[] => {
-  const tomorrowIndex = tasks.findIndex((task) => task.id === "tomorrow");
-  const futureIndex = tasks.findIndex((task) => task.id === "future");
-
-  const tomorrowTasks = tasks.slice(tomorrowIndex + 1, futureIndex);
-  const newTodayTasks = tomorrowTasks.filter(
-    (task) => task.type === "task" && task.startDate && isBefore(new Date(task.startDate), startOfDay(new Date()))
-  );
-  const newTomorrowTasks = tomorrowTasks.filter((task) => newTodayTasks.some((todayTask) => todayTask.id !== task.id));
-
-  return [
-    ...tasks.slice(0, tomorrowIndex),
-    ...newTodayTasks,
-    tasks[tomorrowIndex],
-    ...newTomorrowTasks,
-    ...tasks.slice(futureIndex),
-  ];
-};
+  | { type: "addTask"; payload: { todosId: string; taskName: string; sectionId: "today" | "tomorrow" | "future" } }
+  | { type: "removeTask" | "toggleDone"; payload: { todosId: string; taskId: string } }
+  | { type: "changeOrder"; payload: { todosId: string; tasks: Task[] } };
 
 const reducer: Reducer<Task[], ReducerAction> = (state, action) => {
   switch (action.type) {
@@ -99,6 +82,7 @@ const reducer: Reducer<Task[], ReducerAction> = (state, action) => {
         const task = { ...newTask, color: theme.colors.amber[400], startDate: undefined };
         return [...state, task];
       }
+
       return state;
     }
     case "changeOrder": {
@@ -112,10 +96,7 @@ const reducer: Reducer<Task[], ReducerAction> = (state, action) => {
       const now = new Date();
       const tomorrowTasks = action.payload.tasks.slice(tomorrowIndex + 1, futureIndex).map((task) => {
         if (task.type === "section") return task;
-        if (!task.startDate) {
-          return { ...task, startDate: format(addDays(now, 1), DATE_FORMAT) };
-        }
-        return task;
+        return { ...task, startDate: format(addDays(now, 1), DATE_FORMAT) };
       });
 
       const futureTasks = action.payload.tasks.slice(futureIndex + 1).map((task) => {
@@ -136,24 +117,25 @@ const reducer: Reducer<Task[], ReducerAction> = (state, action) => {
   }
 };
 
-export const useTask = () => {
-  const [tasks, dispatch] = useReducer(
-    reducer,
-    [
-      { id: "11", name: "タスク1", type: "task", color: theme.colors.rose[500], isDone: true },
-      { id: "12", name: "タスク2", type: "task", color: theme.colors.rose[500], isDone: false },
-      { id: "13", name: "タスク2", type: "task", color: theme.colors.rose[500], isDone: false },
-      { id: "14", name: "タスク2", type: "task", color: theme.colors.rose[500], isDone: false },
-      { id: "15", name: "タスク2", type: "task", color: theme.colors.rose[500], isDone: false },
-      { id: "tomorrow", name: "明日する", type: "section", color: theme.colors.orange[400] },
-      { id: "future", name: "今度する", type: "section", color: theme.colors.amber[400] },
-    ],
-    init
-  );
+export const useTask = (initialTasks: Task[]) => {
+  const todosIdSnap = useSnapshot(todosIdState);
+  const [tasks, dispatch] = useReducer(reducer, initialTasks);
 
   useEffect(() => {
     dispatchState.dispatch = dispatch;
   }, []);
+
+  useEffect(() => {
+    const updateTasks = async () => {
+      try {
+        await supabase.from("todos").update({ tasks }).eq("id", todosIdSnap.todosId);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    updateTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks]);
 
   const showTodayAddButton = useMemo(() => {
     const tomorrowIndex = tasks.findIndex((task) => task.id === "tomorrow");
