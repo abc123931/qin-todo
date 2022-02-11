@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, HStack, Text, View, VStack } from "native-base";
+import { Avatar, Box, Flex, HStack, Text, useTheme, View, VStack } from "native-base";
 import type { ReactNode, VFC } from "react";
 import { FooterKeyboard } from "src/layout/FooterKeyboard";
 
@@ -6,8 +6,10 @@ type AppLayoutProps = {
   children: ReactNode;
 };
 export const AppLayout: VFC<AppLayoutProps> = (props) => {
+  const theme = useTheme();
+
   return (
-    <Flex justifyContent="space-between" h="100%">
+    <Flex justifyContent="space-between" h="100%" bgColor={theme.colors.white}>
       <VStack>
         <Box safeAreaTop bg="#6200ee" />
         <HStack bg="#6200ee" w="100%" justifyContent="space-between" alignItems="center" px={6}>

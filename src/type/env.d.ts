@@ -1,4 +1,5 @@
 declare module "@env" {
-  export const SUPABASE_API_URL: string;
-  export const SUPABASE_ANON_KEY: string;
+  const SUPABASE_API_URL: string;
+  const SUPABASE_ANON_KEY: string;
+  const APP_SCHEME: string;
 }

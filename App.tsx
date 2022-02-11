@@ -1,11 +1,12 @@
 import "react-native-url-polyfill/auto";
 
+import { NavigationContainer } from "@react-navigation/native";
 import { NativeBaseProvider } from "native-base";
 import type { VFC } from "react";
 import { Platform, UIManager } from "react-native";
 import ErrorBoundary from "react-native-error-boundary";
 import { CustomFallback } from "src/error-boundary/CustomFallback";
-import { AppScreen } from "src/screen/AppScreen";
+import { MainNavigator } from "src/MainNavigator";
 
 const App: VFC = () => {
   if (Platform.OS === "android") {
@@ -13,9 +14,11 @@ const App: VFC = () => {
   }
   return (
     <NativeBaseProvider>
-      <ErrorBoundary FallbackComponent={CustomFallback}>
-        <AppScreen />
-      </ErrorBoundary>
+      <NavigationContainer>
+        <ErrorBoundary FallbackComponent={CustomFallback}>
+          <MainNavigator />
+        </ErrorBoundary>
+      </NavigationContainer>
     </NativeBaseProvider>
   );
 };

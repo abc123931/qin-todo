@@ -6,3 +6,5 @@ export const supabase = createClient(SUPABASE_API_URL, SUPABASE_ANON_KEY, {
   localStorage: AsyncStorage as any,
   detectSessionInUrl: false,
 });
+
+export const auth = supabase.auth;
