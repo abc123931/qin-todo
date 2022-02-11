@@ -83,11 +83,7 @@ const useInit = () => {
         .map((task) => {
           return { ...task, startDate: undefined };
         });
-      const newTomorrowTasks = newTodayTasks.length
-        ? tomorrowTasks.filter((task) => {
-            return newTodayTasks.some((todayTask) => todayTask.id !== task.id);
-          })
-        : tomorrowTasks;
+      const newTomorrowTasks = newTodayTasks.length ? [] : tomorrowTasks;
 
       return setInitialTasks([
         ...data.tasks.slice(0, tomorrowIndex),
