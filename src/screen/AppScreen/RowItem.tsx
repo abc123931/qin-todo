@@ -5,8 +5,6 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import SwipeableItem, { useSwipeableItemParams } from "react-native-swipeable-item";
 import type { ReducerAction, Task } from "src/hook/useTask";
 import { AddTaskButton } from "src/screen/AppScreen/AddTaskButton";
-import { todosIdState } from "src/valtio/todosId";
-import { useSnapshot } from "valtio";
 
 type RowItemProps = {
   item: Task;
@@ -19,8 +17,6 @@ type RowItemProps = {
 };
 
 export const RowItem: VFC<RowItemProps> = (props) => {
-  const todosIdSnap = useSnapshot(todosIdState);
-
   return (
     <>
       {props.item.type === "section" ? (
@@ -54,12 +50,10 @@ export const RowItem: VFC<RowItemProps> = (props) => {
             renderUnderlayLeft={() => (
               <UnderlayLeft
                 onPress={() => {
-                  if (todosIdSnap.todosId) {
-                    props.dispatch({
-                      type: "removeTask",
-                      payload: { todosId: todosIdSnap.todosId, taskId: props.item.id },
-                    });
-                  }
+                  props.dispatch({
+                    type: "removeTask",
+                    payload: { taskId: props.item.id },
+                  });
                 }}
               />
             )}
@@ -99,14 +93,10 @@ type CustomCheckboxProps = {
 };
 
 const CustomCheckbox: VFC<CustomCheckboxProps> = (props) => {
-  const todosIdSnap = useSnapshot(todosIdState);
-
   return (
     <Pressable
       onPress={() => {
-        if (todosIdSnap.todosId) {
-          props.dispatch({ type: "toggleDone", payload: { todosId: todosIdSnap.todosId, taskId: props.taskId } });
-        }
+        props.dispatch({ type: "toggleDone", payload: { taskId: props.taskId } });
       }}
     >
       <Center width={6} height={6} borderRadius={9999} borderColor={theme.colors.trueGray[300]} borderWidth={2}>

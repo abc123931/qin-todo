@@ -1,12 +1,15 @@
-import type { PostgrestResponse } from "@supabase/supabase-js";
 import { isBefore } from "date-fns";
 import { Center, Spinner, theme } from "native-base";
 import type { ReactElement, VFC } from "react";
+import { useRef } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import type { AppStateStatus } from "react-native";
+import { AppState } from "react-native";
 import type { Task } from "src/hook/useTask";
 import { supabase } from "src/lib/supabase";
-import { todosIdState } from "src/valtio/todosId";
+import { sessionState } from "src/valtio/session";
+import { useSnapshot } from "valtio";
 
 type InitialTaskFetcherProps = {
   children: (tasks: Task[]) => ReactElement;
@@ -26,18 +29,27 @@ export const InitialTaskFetcher: VFC<InitialTaskFetcherProps> = (props) => {
 };
 
 const useInit = () => {
+  const appState = useRef(AppState.currentState);
   const [loading, setLoading] = useState(true);
   const [initialTasks, setInitialTasks] = useState<Task[]>([]);
+  const snap = useSnapshot(sessionState);
 
   const init = async () => {
     try {
-      const { data, error } = await supabase.from<{ id: string; tasks: Task[] }>("todos").select("*").maybeSingle();
+      if (!snap.session?.user?.id) return;
+      setLoading(true);
+      const { data, error } = await supabase
+        .from<{ id: string; user_id: string; tasks: Task[] }>("todos")
+        .select("*")
+        .eq("user_id", snap.session.user.id)
+        .maybeSingle();
       if (error) {
         throw new Error(error?.message ?? "データ取得に失敗しました");
       }
       if (!data) {
-        const res: PostgrestResponse<{ id: string }> = await supabase.from("todos").insert([
+        await supabase.from("todos").insert([
           {
+            user_id: snap.session.user.id,
             tasks: [
               {
                 id: "tomorrow",
@@ -55,8 +67,6 @@ const useInit = () => {
           },
         ]);
 
-        todosIdState.todosId = res.data?.[0]?.id;
-
         return setInitialTasks([
           {
             id: "tomorrow",
@@ -73,7 +83,6 @@ const useInit = () => {
         ]);
       }
 
-      todosIdState.todosId = data.id;
       const tomorrowIndex = data.tasks.findIndex((task) => task.id === "tomorrow");
       const futureIndex = data.tasks.findIndex((task) => task.id === "future");
 
@@ -99,8 +108,25 @@ const useInit = () => {
     }
   };
 
+  const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+    if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+      await init();
+    }
+    appState.current = nextAppState;
+  };
+
+  useEffect(() => {
+    AppState.addEventListener("change", handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", handleAppStateChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { loading, initialTasks };

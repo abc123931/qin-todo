@@ -7,7 +7,7 @@ import { useReducer } from "react";
 import { nanoid } from "src/lib/nanoid";
 import { supabase } from "src/lib/supabase";
 import { dispatchState } from "src/valtio/dispatch";
-import { todosIdState } from "src/valtio/todosId";
+import { sessionState } from "src/valtio/session";
 import { useSnapshot } from "valtio";
 
 const DATE_FORMAT = "yyyy-MM-dd";
@@ -29,9 +29,9 @@ export type Task =
     };
 
 export type ReducerAction =
-  | { type: "addTask"; payload: { todosId: string; taskName: string; sectionId: "today" | "tomorrow" | "future" } }
-  | { type: "removeTask" | "toggleDone"; payload: { todosId: string; taskId: string } }
-  | { type: "changeOrder"; payload: { todosId: string; tasks: Task[] } };
+  | { type: "addTask"; payload: { taskName: string; sectionId: "today" | "tomorrow" | "future" } }
+  | { type: "removeTask" | "toggleDone"; payload: { taskId: string } }
+  | { type: "changeOrder"; payload: { tasks: Task[] } };
 
 const reducer: Reducer<Task[], ReducerAction> = (state, action) => {
   switch (action.type) {
@@ -118,7 +118,7 @@ const reducer: Reducer<Task[], ReducerAction> = (state, action) => {
 };
 
 export const useTask = (initialTasks: Task[]) => {
-  const todosIdSnap = useSnapshot(todosIdState);
+  const snap = useSnapshot(sessionState);
   const [tasks, dispatch] = useReducer(reducer, initialTasks);
 
   useEffect(() => {
@@ -128,7 +128,9 @@ export const useTask = (initialTasks: Task[]) => {
   useEffect(() => {
     const updateTasks = async () => {
       try {
-        await supabase.from("todos").update({ tasks }).eq("id", todosIdSnap.todosId);
+        if (snap.session?.user?.id) {
+          await supabase.from("todos").update({ tasks }).eq("user_id", snap.session?.user?.id);
+        }
       } catch (error) {
         console.error(error);
       }

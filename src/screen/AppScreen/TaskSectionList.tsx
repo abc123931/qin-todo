@@ -8,15 +8,12 @@ import type { Task } from "src/hook/useTask";
 import { useTask } from "src/hook/useTask";
 import { AddTaskButton } from "src/screen/AppScreen/AddTaskButton";
 import { RowItem } from "src/screen/AppScreen/RowItem";
-import { todosIdState } from "src/valtio/todosId";
-import { useSnapshot } from "valtio";
 
 type TaskSectionListProps = {
   initialTasks: Task[];
 };
 
 export const TaskSectionList: VFC<TaskSectionListProps> = (props) => {
-  const todosIdSnap = useSnapshot(todosIdState);
   const { tasks, dispatch, showTodayAddButton, showTomorrowAddButton, showFutureAddButton } = useTask(
     props.initialTasks
   );
@@ -41,9 +38,7 @@ export const TaskSectionList: VFC<TaskSectionListProps> = (props) => {
     <DraggableFlatList
       data={tasks}
       onDragEnd={({ data }) => {
-        if (todosIdSnap.todosId) {
-          dispatch({ type: "changeOrder", payload: { todosId: todosIdSnap.todosId, tasks: data } });
-        }
+        dispatch({ type: "changeOrder", payload: { tasks: data } });
       }}
       ListHeaderComponent={
         <Heading size="md" pb={4} color={theme.colors.rose[500]}>
