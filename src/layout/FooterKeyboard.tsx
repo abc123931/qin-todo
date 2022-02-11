@@ -5,6 +5,7 @@ import type { VFC } from "react";
 import { useEffect, useState } from "react";
 import { useController, useForm } from "react-hook-form";
 import { Keyboard, Platform } from "react-native";
+import { useAddTaskInputRef } from "src/context/AddTaskInputRefContext";
 import { dispatchState } from "src/valtio/dispatch";
 import { todosIdState } from "src/valtio/todosId";
 import { useSnapshot } from "valtio";
@@ -20,6 +21,7 @@ export const FooterKeyboard: VFC = () => {
   const {
     field: { value, onChange },
   } = useController({ control, name: "name" });
+  const ref = useAddTaskInputRef();
 
   const handleClick = (sectionId: "today" | "tomorrow" | "future") =>
     handleSubmit(async (data) => {
@@ -42,6 +44,7 @@ export const FooterKeyboard: VFC = () => {
             color={theme.colors.trueGray[100]}
             value={value}
             onChangeText={onChange}
+            ref={ref}
           />
           {isShowKeyboard ? (
             <HStack alignItems="center" justifyContent="space-between">

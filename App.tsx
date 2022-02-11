@@ -3,7 +3,6 @@ import "react-native-url-polyfill/auto";
 import { NativeBaseProvider } from "native-base";
 import type { VFC } from "react";
 import { Platform, UIManager } from "react-native";
-import { AppLayout } from "src/layout/AppLayout";
 import { AppScreen } from "src/screen/AppScreen";
 
 const App: VFC = () => {
@@ -12,9 +11,7 @@ const App: VFC = () => {
   }
   return (
     <NativeBaseProvider>
-      <AppLayout>
-        <AppScreen />
-      </AppLayout>
+      <AppScreen />
     </NativeBaseProvider>
   );
 };
