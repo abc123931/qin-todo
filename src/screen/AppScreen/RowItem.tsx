@@ -1,10 +1,10 @@
 import { Box, Center, Heading, HStack, Pressable, Text, theme, useTheme, View } from "native-base";
 import type { Dispatch, VFC } from "react";
-import { ScaleDecorator } from "react-native-draggable-flatlist";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import SwipeableItem, { useSwipeableItemParams } from "react-native-swipeable-item";
 import type { ReducerAction, Task } from "src/hook/useTask";
 import { AddTaskButton } from "src/screen/AppScreen/AddTaskButton";
+import { CustomScaleDecorator } from "src/screen/AppScreen/CustomScaleDecorator";
 
 type RowItemProps = {
   item: Task;
@@ -30,7 +30,7 @@ export const RowItem: VFC<RowItemProps> = (props) => {
           </Heading>
         </>
       ) : (
-        <ScaleDecorator>
+        <CustomScaleDecorator>
           <SwipeableItem
             key={props.item.id}
             item={props.item}
@@ -79,7 +79,7 @@ export const RowItem: VFC<RowItemProps> = (props) => {
               </Pressable>
             </View>
           </SwipeableItem>
-        </ScaleDecorator>
+        </CustomScaleDecorator>
       )}
     </>
   );
