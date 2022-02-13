@@ -29,7 +29,7 @@ export const FooterKeyboard: VFC = () => {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <Box w="100%" bg="#6200ee">
+      <Box w="100%" borderTopWidth={2} borderColor={theme.colors.trueGray[200]}>
         <VStack px={6} py={3} pb={isShowKeyboard ? undefined : 10} space={2.5}>
           <Input
             variant="rounded"

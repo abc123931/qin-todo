@@ -1,5 +1,6 @@
-import { Avatar, Box, Flex, HStack, Text, useTheme, View, VStack } from "native-base";
+import { Avatar, Box, Flex, HStack, useTheme, View, VStack } from "native-base";
 import type { ReactNode, VFC } from "react";
+import { Logo } from "src/components/Logo";
 import { FooterKeyboard } from "src/layout/FooterKeyboard";
 import { sessionState } from "src/valtio/session";
 import { useSnapshot } from "valtio";
@@ -14,18 +15,16 @@ export const AppLayout: VFC<AppLayoutProps> = (props) => {
   return (
     <Flex justifyContent="space-between" h="100%" bgColor={theme.colors.white}>
       <VStack>
-        <Box safeAreaTop bg="#6200ee" />
-        <HStack bg="#6200ee" w="100%" justifyContent="space-between" alignItems="center" px={6}>
+        <Box safeAreaTop />
+        <HStack w="100%" justifyContent="space-between" alignItems="center" px={6}>
           <Box w={36} h={36} />
-          <Text fontSize={24} py={3} color="coolGray.100" fontWeight="bold">
-            Qin Todo
-          </Text>
+          <Logo />
           <Avatar
             w={36}
             h={36}
             my={2.5}
             source={{
-              uri: sessionSnap.session?.user?.user_metadata?.avatar_url + "test",
+              uri: sessionSnap.session?.user?.user_metadata?.avatar_url,
             }}
           >
             <Avatar w={36} h={36} my={2.5} source={require("/assets/dummy_profile.png")} />
