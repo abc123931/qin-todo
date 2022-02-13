@@ -32,6 +32,7 @@ export const RowItem: VFC<RowItemProps> = (props) => {
       ) : (
         <CustomScaleDecorator>
           <SwipeableItem
+            swipeEnabled={!props.isActive}
             key={props.item.id}
             item={props.item}
             ref={(ref) => {
