@@ -34,13 +34,18 @@ export const FooterKeyboard: VFC = () => {
           <Input
             variant="rounded"
             placeholder="タスクを入力する"
-            height={36}
+            size="sm"
             py={2.5}
             px={4}
-            color={theme.colors.trueGray[100]}
             value={value}
             onChangeText={onChange}
+            fontSize={12}
+            lineHeight={16}
+            bgColor={theme.colors.blueGray[100]}
+            borderWidth={0}
             ref={ref}
+            alignItems="center"
+            selectionColor={theme.colors.rose[500]}
           />
           {isShowKeyboard ? (
             <HStack alignItems="center" justifyContent="space-between">

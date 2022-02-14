@@ -1,7 +1,7 @@
 import "react-native-url-polyfill/auto";
 
 import { NavigationContainer } from "@react-navigation/native";
-import { NativeBaseProvider } from "native-base";
+import { extendTheme, NativeBaseProvider } from "native-base";
 import type { VFC } from "react";
 import { Platform, UIManager } from "react-native";
 import ErrorBoundary from "react-native-error-boundary";
@@ -12,8 +12,21 @@ const App: VFC = () => {
   if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
   }
+  const theme = extendTheme({
+    components: {
+      Input: {
+        defaultProps: {
+          _focus: {
+            borderWidth: 1,
+            borderColor: "rose.500",
+          },
+        },
+      },
+    },
+  });
+
   return (
-    <NativeBaseProvider>
+    <NativeBaseProvider theme={theme}>
       <NavigationContainer>
         <ErrorBoundary FallbackComponent={CustomFallback}>
           <MainNavigator />
