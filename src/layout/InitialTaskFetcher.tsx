@@ -116,16 +116,13 @@ const useInit = () => {
   };
 
   useEffect(() => {
+    init();
+
     AppState.addEventListener("change", handleAppStateChange);
 
     return () => {
       AppState.removeEventListener("change", handleAppStateChange);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
