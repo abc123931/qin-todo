@@ -4,14 +4,17 @@ import { Button, useTheme, VStack } from "native-base";
 import type { VFC } from "react";
 import { useCallback } from "react";
 import { Logo } from "src/components/Logo";
+import { AllLayout } from "src/layout/AllLayout";
 import { auth } from "src/lib/supabase";
 
 export const SignInScreen: VFC = () => {
   return (
-    <VStack w="100%" h="100%" justifyContent="center" alignItems="center" space={16}>
-      <Logo width="60%" height={30} />
-      <SignInButton />
-    </VStack>
+    <AllLayout>
+      <VStack w="100%" h="100%" justifyContent="center" alignItems="center" space={16}>
+        <Logo width="60%" height={30} />
+        <SignInButton />
+      </VStack>
+    </AllLayout>
   );
 };
 

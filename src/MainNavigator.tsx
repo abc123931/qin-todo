@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect } from "react";
 import { auth } from "src/lib/supabase";
 import { AppScreen } from "src/screen/AppScreen";
+import { SettingScreen } from "src/screen/SettingScreen";
 import { SignInScreen } from "src/screen/SignInScreen";
 import { sessionState } from "src/valtio/session";
 import { useSnapshot } from "valtio";
@@ -9,6 +10,7 @@ import { useSnapshot } from "valtio";
 export type RootStackParamList = {
   signIn: undefined;
   app: undefined;
+  setting: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -30,7 +32,10 @@ export const MainNavigator = () => {
   return (
     <Stack.Navigator>
       {snap.session ? (
-        <Stack.Screen name="app" component={AppScreen} options={{ headerShown: false }} />
+        <>
+          <Stack.Screen name="app" component={AppScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="setting" component={SettingScreen} options={{ headerShown: false }} />
+        </>
       ) : (
         <Stack.Screen name="signIn" component={SignInScreen} options={{ headerShown: false }} />
       )}

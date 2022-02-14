@@ -1,40 +1,47 @@
-import { Avatar, Box, HStack, Modal, Pressable, Text, VStack } from "native-base";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Box, HStack, Modal, Pressable, Text, VStack } from "native-base";
 import type { VFC } from "react";
+import { useState } from "react";
 import { Logo } from "src/components/Logo";
+import { ProfileAvatar } from "src/components/ProfileAvatar";
 import { auth } from "src/lib/supabase";
-import { sessionState } from "src/valtio/session";
-import { useSnapshot } from "valtio";
+import type { RootStackParamList } from "src/MainNavigator";
 
 export const Header: VFC = () => {
-  const sessionSnap = useSnapshot(sessionState);
+  const [isOpen, setIsOpen] = useState(false);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "setting">>();
 
   return (
     <>
-      <VStack>
-        <Box safeAreaTop />
-        <HStack w="100%" justifyContent="space-between" alignItems="center" px={6}>
-          <Box w={36} h={36} />
-          <Pressable>
-            <Logo />
-          </Pressable>
-          <Avatar
-            w={36}
-            h={36}
-            my={2.5}
-            source={{
-              uri: sessionSnap.session?.user?.user_metadata?.avatar_url,
-            }}
-          >
-            <Avatar w={36} h={36} my={2.5} source={require("/assets/dummy_profile.png")} />
-          </Avatar>
-        </HStack>
-      </VStack>
-      <Modal isOpen size="lg">
+      <HStack w="100%" justifyContent="space-between" alignItems="center" px={6}>
+        <Box w={36} h={36} />
+        <Pressable>
+          <Logo />
+        </Pressable>
+        <ProfileAvatar w={36} h={36} my={2.5} onPress={() => setIsOpen(true)} />
+      </HStack>
+      <Modal isOpen={isOpen} size="lg" onClose={() => setIsOpen(false)}>
         <Modal.Content mb="auto" mt={70}>
           <Modal.Body>
-            <VStack>
-              <Text>hello</Text>
-              <Pressable onPress={() => auth.signOut()}>
+            <VStack mx={3} my={3} space={4}>
+              <ProfileAvatar w={8} h={8} />
+              <Pressable
+                onPress={() => {
+                  setIsOpen(false);
+                  navigation.navigate("setting");
+                }}
+              >
+                <HStack>
+                  <Text>設定</Text>
+                </HStack>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setIsOpen(false);
+                  auth.signOut();
+                }}
+              >
                 <HStack>
                   <Text>ログアウト</Text>
                 </HStack>
