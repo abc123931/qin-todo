@@ -9,8 +9,8 @@ export const AllLayout: VFC<AllLayoutProps> = (props) => {
   const theme = useTheme();
 
   return (
-    <VStack w="100%" h="100%">
-      <Box safeAreaTop bgColor={theme.colors.white} />
+    <VStack w="100%" h="100%" _light={{ bgColor: theme.colors.white }} _dark={{ bgColor: theme.colors.dark[100] }}>
+      <Box safeAreaTop _light={{ bgColor: theme.colors.white }} _dark={{ bgColor: theme.colors.dark[100] }} />
       {props.children}
     </VStack>
   );
