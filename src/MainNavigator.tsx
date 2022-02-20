@@ -34,7 +34,11 @@ export const MainNavigator = () => {
       {snap.session ? (
         <>
           <Stack.Screen name="app" component={AppScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="setting" component={SettingScreen} options={{ headerShown: false }} />
+          <Stack.Screen
+            name="setting"
+            component={SettingScreen}
+            options={{ headerShown: false, animation: "slide_from_bottom" }}
+          />
         </>
       ) : (
         <Stack.Screen name="signIn" component={SignInScreen} options={{ headerShown: false }} />
