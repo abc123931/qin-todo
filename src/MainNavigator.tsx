@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { auth } from "src/lib/supabase";
 import { AppScreen } from "src/screen/AppScreen";
 import { SettingScreen } from "src/screen/SettingScreen";
+import { SettingThemeScreen } from "src/screen/SettingThemeScreen";
 import { SignInScreen } from "src/screen/SignInScreen";
 import { sessionState } from "src/valtio/session";
 import { useSnapshot } from "valtio";
@@ -11,6 +12,7 @@ export type RootStackParamList = {
   signIn: undefined;
   app: undefined;
   setting: undefined;
+  settingTheme: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,6 +41,7 @@ export const MainNavigator = () => {
             component={SettingScreen}
             options={{ headerShown: false, animation: "slide_from_bottom" }}
           />
+          <Stack.Screen name="settingTheme" component={SettingThemeScreen} options={{ headerShown: false }} />
         </>
       ) : (
         <Stack.Screen name="signIn" component={SignInScreen} options={{ headerShown: false }} />
