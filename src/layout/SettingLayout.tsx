@@ -7,7 +7,7 @@ import { AllLayout } from "src/layout/AllLayout";
 type SettingLayoutProps = {
   title: string;
   backIconName: "close-outline" | "chevron-back-outline";
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
 };
 
 export const SettingLayout: VFC<SettingLayoutProps> = (props) => {
