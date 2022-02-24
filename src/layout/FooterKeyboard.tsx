@@ -1,5 +1,16 @@
 import { AntDesign } from "@expo/vector-icons";
-import { Box, Button, HStack, Icon, Input, KeyboardAvoidingView, Text, useTheme, VStack } from "native-base";
+import {
+  Box,
+  Button,
+  HStack,
+  Icon,
+  Input,
+  KeyboardAvoidingView,
+  Text,
+  useColorModeValue,
+  useTheme,
+  VStack,
+} from "native-base";
 import type { ColorType } from "native-base/lib/typescript/components/types";
 import type { VFC } from "react";
 import { useEffect, useState } from "react";
@@ -13,6 +24,7 @@ type Form = { name: string };
 
 export const FooterKeyboard: VFC = () => {
   const theme = useTheme();
+  const borderColor = useColorModeValue(theme.colors.trueGray[200], theme.colors.dark[300]);
   const { isShowKeyboard } = useKeyboard();
   const snap = useSnapshot(dispatchState);
   const { control, handleSubmit, reset } = useForm<Form>({ defaultValues: { name: "" } });
@@ -29,8 +41,8 @@ export const FooterKeyboard: VFC = () => {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <Box w="100%" borderTopWidth={2} borderColor={theme.colors.trueGray[200]}>
-        <VStack px={6} py={3} pb={isShowKeyboard ? undefined : 10} space={2.5}>
+      <Box w="100%" h={isShowKeyboard ? 128 : 108} borderTopWidth={2} borderColor={borderColor}>
+        <VStack px={6} py={3} space={2.5}>
           <Input
             variant="rounded"
             placeholder="タスクを入力する"
@@ -53,7 +65,9 @@ export const FooterKeyboard: VFC = () => {
               <StatusButton text="明日する" color={theme.colors.orange[400]} onPress={handleClick("tomorrow")} />
               <StatusButton text="今度する" color={theme.colors.amber[400]} onPress={handleClick("future")} />
             </HStack>
-          ) : null}
+          ) : (
+            <Box h={9} />
+          )}
         </VStack>
       </Box>
     </KeyboardAvoidingView>

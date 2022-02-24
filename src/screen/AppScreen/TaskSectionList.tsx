@@ -36,6 +36,7 @@ export const TaskSectionList: VFC<TaskSectionListProps> = (props) => {
 
   return (
     <DraggableFlatList
+      style={{ height: "100%" }}
       data={tasks}
       onDragEnd={({ data }) => {
         dispatch({ type: "changeOrder", payload: { tasks: data } });

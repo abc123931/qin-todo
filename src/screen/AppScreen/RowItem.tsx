@@ -1,4 +1,4 @@
-import { Box, Center, Heading, HStack, Pressable, Text, theme, useTheme, View } from "native-base";
+import { Box, Center, Heading, HStack, Pressable, Text, useColorModeValue, useTheme, View } from "native-base";
 import type { Dispatch, VFC } from "react";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import SwipeableItem, { useSwipeableItemParams } from "react-native-swipeable-item";
@@ -17,6 +17,8 @@ type RowItemProps = {
 };
 
 export const RowItem: VFC<RowItemProps> = (props) => {
+  const theme = useTheme();
+  const viewBgColor = useColorModeValue(theme.colors.white, theme.colors.dark[100]);
   return (
     <>
       {props.item.type === "section" ? (
@@ -60,7 +62,7 @@ export const RowItem: VFC<RowItemProps> = (props) => {
             )}
             snapPointsLeft={[72]}
           >
-            <View bgColor={props.isActive ? "transparent" : theme.colors.white}>
+            <View bgColor={props.isActive ? "transparent" : viewBgColor}>
               <Pressable onLongPress={props.drag} delayLongPress={100} disabled={props.isActive}>
                 <HStack alignItems="center" space={3} py={2}>
                   <CustomCheckbox
@@ -94,6 +96,8 @@ type CustomCheckboxProps = {
 };
 
 const CustomCheckbox: VFC<CustomCheckboxProps> = (props) => {
+  const theme = useTheme();
+
   return (
     <Pressable
       onPress={() => {
