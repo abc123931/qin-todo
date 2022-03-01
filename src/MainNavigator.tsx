@@ -8,7 +8,7 @@ import { SettingScreen } from "src/screen/SettingScreen";
 import { SettingThemeScreen } from "src/screen/SettingThemeScreen";
 import { SignInScreen } from "src/screen/SignInScreen";
 import { sessionState } from "src/valtio/session";
-import { setTheme, themeState } from "src/valtio/theme";
+import { themeState } from "src/valtio/theme";
 import { useSnapshot } from "valtio";
 
 export type RootStackParamList = {
@@ -26,11 +26,9 @@ export const MainNavigator = () => {
   const themeSnap = useSnapshot(themeState);
 
   useEffect(() => {
-    sessionState.session = auth.session();
     const { data: authListener } = auth.onAuthStateChange(async (_event, session) => {
       sessionState.session = session;
     });
-    setTheme();
 
     return () => {
       authListener?.unsubscribe();
